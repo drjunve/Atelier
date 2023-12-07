@@ -1,0 +1,167 @@
+package com.edu.springboot.product;
+
+import java.util.ArrayList;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+@Controller
+public class dummyController {
+	
+	
+	@Autowired
+	Idummy dao;
+	
+	
+	private String getTagValue(String sTag, Element eElement) {
+		
+	    NodeList nlList = eElement.getElementsByTagName(sTag).item(0)
+	            .getChildNodes();
+
+	    Node nValue = (Node) nlList.item(0);
+
+	    return nValue.getNodeValue();
+	}
+
+	@RequestMapping("/dummInsert.do")
+	public String insert1(ProductDTO productDTO) {
+		
+		String intro = "〈취상 1〉(1987)은 이종상의 ‘독도’ 시리즈 중 하나로, 먹의 농담을 이용한 발묵으로 안개가 내려앉은 듯 어스름한 독도의 풍경을 그려낸 작품이다.\n "
+				+ "작가는 수평선을 중심으로 하여 실제의 독도와 물에 비친 형상이 마주하는 단순한 조형으로 깊이 있는 추상성을 보여 준다. \n "
+				+ "‘상(象)을 고르다’라는 뜻의 작품 제목 ‘취상(取象)’은 단지 시각적으로 바라 본 실경을 그대로 옮기는 것이 아니라 마음의 눈에 맺힌 풍경을 그린다는 진경산수의 본질을 드러내주어 겸재의 정신을 계승하려는 작가의 의지를 담고 있다.";
+		
+		
+		try {
+			String url ="https://www.jeju.go.kr/rest/JejuHdMuseumCollection/getJejuHdMuseumCollectionList?pageSize=1000";
+			
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dbBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dbBuilder.parse(url);
+			
+			doc.getDocumentElement().normalize();
+			System.out.println("호날두 : " + doc.getDocumentElement().getNodeName());
+			
+			NodeList nList = doc.getElementsByTagName("item");
+			System.out.println("siuuu : " + nList.getLength() );
+			
+			for(int i=0; i<nList.getLength(); i++) {
+				
+				Node nNode = nList.item(i);
+				if(nNode.getNodeType() == Node.ELEMENT_NODE) {
+					
+					Element eElement = (Element) nNode;
+					
+					System.out.println(i+"seq : "+ getTagValue("seq", eElement));
+					System.out.println(i+"owner : "+ getTagValue("owner", eElement));
+					
+					String title = (String)getTagValue("name", eElement);
+					String seq = (String)getTagValue("seq", eElement);
+					
+					String[] size = ((String)getTagValue("size", eElement)).split("[*]| X | X");
+					String size1=size[0];
+					String size2=size[1];
+					
+					// 소수점(.)의 인덱스 찾기
+			        int dotIndex = size[0].indexOf('.');
+			        // 소수점이 있는 경우에만 처리
+			        if (dotIndex != -1) {size1 = size[0].substring(0, dotIndex);}
+			        if(size[0].contains("//(39")) {size1="39";}
+			        
+			        int dotIndex2 = size[1].indexOf('.');
+			        // 소수점이 있는 경우에만 처리
+			        if (dotIndex2 != -1) {size2 = size[1].substring(0, dotIndex2);}
+			        if (size[1].contains(",")) {size2 = "25"; System.out.println(size2);}
+			        if(size[1].contains("H")) {size2 = size[1].substring(1);}
+//					if(size[0].contains(".")) {size1 = size[0].split(".")[0];}
+//					
+//					if(size[1].contains(".")) {size2 = size[1].split(".")[0];}
+					
+					double pri = Double.parseDouble(size1) * Double.parseDouble(size2) * 500;
+//					String price = String.valueOf(pri);
+					String ffile = ((String)getTagValue("cover", eElement));
+					
+					
+					
+					productDTO.setTitle(title);
+					productDTO.setPidx(seq);
+					//////
+					if(i>0 && i<=60) {
+						productDTO.setM_name("김지원");
+						productDTO.setAidx("10");
+						productDTO.setTheme("자연/풍경");
+						productDTO.setP_type("아크릴");
+					}
+					else if(i>60 && i<=120) {
+						productDTO.setM_name("박지원");
+						productDTO.setAidx("11");
+						productDTO.setTheme("인물");
+						productDTO.setP_type("유화");
+					}
+					else if(i>120 && i<=180) {
+						productDTO.setM_name("김진웅");
+						productDTO.setAidx("12");
+						productDTO.setTheme("동식물");
+						productDTO.setP_type("수채화");
+					}
+					else if(i>180 && i<=240) {
+						productDTO.setM_name("박진웅");
+						productDTO.setAidx("13");
+						productDTO.setTheme("사물");
+						productDTO.setP_type("수묵화");
+					}
+					else if(i>240 && i<=300) {
+						productDTO.setM_name("강이화");
+						productDTO.setAidx("8");
+						productDTO.setTheme("추상");
+						productDTO.setP_type("스케치");
+					}
+					else{
+						productDTO.setM_name("김현아");
+						productDTO.setAidx("9");
+						productDTO.setTheme("기타");
+						productDTO.setP_type("혼합/기타");
+					}
+					
+					
+					/////////
+					productDTO.setAuction("0");
+					productDTO.setSize1(size1);
+					productDTO.setSize2(size2);
+					
+					
+					productDTO.setP_like("0");
+					productDTO.setPrice(pri+"");
+					productDTO.setP_intro(intro);
+					
+					productDTO.setFramed("1");
+					productDTO.setOfile(ffile);
+					productDTO.setSfile(ffile);
+					
+					
+				}
+				
+//				dao.insertDum(product);
+				dao.insertDum(productDTO);
+				
+				
+			}
+			
+		
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		
+		return "dummydate";
+	}
+}

@@ -1,0 +1,11 @@
+package com.edu.springboot.product;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+@Mapper
+public interface Idummy {
+
+	public int insertDum(ProductDTO productDTO);
+}

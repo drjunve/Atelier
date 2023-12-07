@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.edu.springboot.jdbc.IMemberService">
+
+	
+	<!-- 회원 목록 출력 -->
+	<select id="select"
+		resultType="com.edu.springboot.jdbc.MemberDTO"> 
+		select * from member order by regidate desc
+	</select>
+	
+	<!-- 회원 등록 -->
+	<insert id="insert" 
+		parameterType="com.edu.springboot.jdbc.MemberDTO"> 
+		insert into member (id, pass, m_name, phone, zip, addr1, addr2, midx) values 
+			(#{id}, #{pass}, #{m_name}, #{phone}, #{zip}, #{addr1}, #{addr2}, seq_member.nextval)
+	</insert> 
+	
+	<!-- 회원 정보 인출 -->
+	<select id="selectOne"
+		parameterType="com.edu.springboot.jdbc.InfoDTO"
+		resultType="com.edu.springboot.jdbc.MemberDTO">
+		select * from member where id=#{id}
+	</select>
+	
+	<!-- 로그인 -->
+	<select id="login"
+		parameterType="com.edu.springboot.jdbc.MemberDTO"
+		resultType="com.edu.springboot.jdbc.MemberDTO">
+		select * from member where id=#{id} and pass=#{pass}	
+	</select>
+	
+	<!-- 회원 정보 수정 -->
+	<update id="update" 
+		parameterType="com.edu.springboot.jdbc.MemberDTO"> 
+		update member set pass=#{pass}, name=#{name} 
+		where id=#{id}
+	</update> 
+	
+	<!-- 회원삭제 -->
+	<delete id="delete" 
+		parameterType="com.edu.springboot.jdbc.MemberDTO"> 
+		delete from member where id=#{id}
+	</delete>
+	
+	<!-- 이메일 중복 검사 -->
+	<select id="emailOverlap"
+		parameterType="com.edu.springboot.jdbc.MemberDTO"
+		resultType="int">
+		select COUNT(*) FROM MEMBER WHERE id=#{id}
+	</select>
+	
+	<!-- 비번찾기(아이디 조회) -->
+	<select id="findPassIdSelect"
+		parameterType="com.edu.springboot.jdbc.MemberDTO"
+		resultType="com.edu.springboot.jdbc.MemberDTO">
+		select * from member where id=#{id}	
+	</select>
+	
+	<!-- 
+	<select id="seletList"
+		parameterType="com.edu.springboot.smtp.MemberDTO"
+		resultType="com.edu.springboot.smtp.MemberDTO">
+		select * from member 
+			<if test="searchWord != null">
+			where
+			<foreach collection="searchWord" item="str" open="(" close=")" separator="or">
+				${searchField} like '%'||#{str}||'%'
+			</foreach>
+		</if>
+	</select>
+	
+	<insert id="write" 
+		parameterType="com.edu.springboot.smtp.MemberDTO">
+		INSERT INTO member 
+			(id, pass, name, regidate)
+		VALUES 
+			(#{id}, #{pass}, #{name}, sysdate)
+	</insert>
+	
+	 -->
+
+</mapper>
