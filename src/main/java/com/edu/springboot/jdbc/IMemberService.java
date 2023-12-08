@@ -27,4 +27,6 @@ public interface IMemberService {
 	public MemberDTO login(MemberDTO memberDTO);
 	//비밀번호 찾기(아이디 조회 select)
 	public MemberDTO findPassIdSelect(MemberDTO memberDTO);
+	//프로필 사진 업로드
+	public MemberDTO uploadProfile(MemberDTO memerDTO);
 }

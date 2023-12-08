@@ -1,8 +1,12 @@
 package com.edu.springboot;
 
+import java.io.File;
+import java.util.HashMap;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.edu.springboot.jdbc.IMemberService;
 import com.edu.springboot.jdbc.InfoDTO;
@@ -18,11 +23,15 @@ import com.edu.springboot.sms.SmsController;
 import com.edu.springboot.smtp.EmailSending;
 
 import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Part;
 import net.nurigo.sdk.message.model.Message;
+import utils.Functions;
 
 @Controller
 public class MainController {
@@ -43,7 +52,7 @@ public class MainController {
 	}
 
 	@RequestMapping("/login")
-	public String login(Model model, HttpServletRequest req, InfoDTO infoDTO) {
+	public String login(Model model, HttpServletRequest req, InfoDTO infoDTO, HttpSession session) {
 		model.addAttribute("loginPage","1");
 		try {
 		Cookie[] list = req.getCookies();
@@ -54,7 +63,6 @@ public class MainController {
 			if(cookie.getName().equals("saveEmail")) {
 				model.addAttribute("saveEmail", cookie.getValue());
 			}
-			
 		}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -230,7 +238,8 @@ public class MainController {
 	
 	//로그인
 	@PostMapping("/login.do")
-	public String loginProcess(InfoDTO infoDTO, MemberDTO memberDTO, Model model, HttpSession session, HttpServletResponse res) {
+	public String loginProcess(InfoDTO infoDTO, MemberDTO memberDTO, Model model, HttpSession session, HttpServletResponse res, RedirectAttributes red) {
+		System.out.println("logindo try.. att : "+session.getAttribute("tryMypageWithNoLogin"));
 		System.out.println("logId : "+infoDTO.getLogId());
 		System.out.println("logPass : "+infoDTO.getLogPass());
 		System.out.println("saveEmail : "+infoDTO.getSaveEmail());
@@ -267,7 +276,14 @@ public class MainController {
 				session.setAttribute("memberDTO", result);
 				//session.setAttribute("m_name", result.getM_name());
 			}
-			return "main";
+			// 로그아웃 상태로 mypage를 클릭하여 로그인 페이지로 포워드된 이후 로그인한 경우 로그인에 성공하면 mypage로 포워드한다.
+			if (session.getAttribute("tryMypageWithNoLogin") == null) {
+				return "main";
+			} else {
+				session.removeAttribute("tryMypageWithNoLogin");
+				System.out.println("session try... 확인 : "+session.getAttribute("tryMypageWithNoLogin"));
+				return "redirect:mypage";
+			}
 		} catch (Exception e) {
 			model.addAttribute("logSuc", "0");
 			model.addAttribute("loginPage","1");
@@ -291,8 +307,43 @@ public class MainController {
 		return "/member/findPass";
 	}
 	
+	//마이페이지
 	@RequestMapping("mypage")
-	public String myPage() {
-		return "member/mypage";
+	public String myPage(HttpSession session, HttpServletRequest req, Model model) {
+		System.out.println("mypage log suc : "+session.getAttribute("logSuc"));
+		if (session.getAttribute("logSuc")!=null) {
+			return "member/mypage";
+		} else {
+			session.setAttribute("tryMypageWithNoLogin", "1");
+			return "forward:login";
+		}
+	}
+	
+	@RequestMapping("uploadProfile")
+	public String uploadProfile() {
+		return "member/uploadProfile";
+	}
+	
+	@PostMapping("uploadProfile.do")
+	public String uploadProfileProcess(HttpServletRequest req, Model model, HttpSession session, MemberDTO memberDTO) {
+		try {
+			String uploadDir = ResourceUtils.getFile("classpath:static/uploads/").toPath().toString();
+			System.out.println("물리적 경로 : "+uploadDir);
+			Part part = req.getPart("profileo");
+			String partHeader = part.getHeader("content-disposition");
+			System.out.println("partHeader="+partHeader);
+			String[] phArr = partHeader.split("filename=");
+			String originalFileName = phArr[1].trim().replace("\"","");
+			if(!originalFileName.isEmpty()) {
+				part.write(uploadDir+File.separator+originalFileName);
+			}
+			String savedFileName = Functions.renameFilie(uploadDir, originalFileName);
+			model.addAttribute("savedFileName",savedFileName);
+			
+		}
+		catch (Exception e) {
+			System.out.println("업로드 실패");
+		}
+		return "member/uploadProfile";
 	}
 }

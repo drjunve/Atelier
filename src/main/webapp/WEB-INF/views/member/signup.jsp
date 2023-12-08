@@ -59,8 +59,8 @@ window.onload = function() {
 		</div>
 		<div class="row">
 			<div class="col-xxl-6 d-grid mx-auto p-2">
-			<c:choose>
-			<c:when test="${loginPage == '1'}">
+<c:choose>
+<c:when test="${loginPage == '1'}">
 			<form name="logform" action="login.do" method="post">
 				<table class="table table-borderless">
 					<tr>
@@ -74,14 +74,14 @@ window.onload = function() {
 						</td>
 					</tr>
 					<tr>
-<c:choose>
-<c:when test="${saveEmail == 'saveEmail'}">
+	<c:choose>
+	<c:when test="${saveEmail == 'saveEmail'}">
 							<td class="text-left"><input type="checkbox" name="saveEmail" id="saveEmail" class="form-check-input" value="saveEmail" checked style="width: 20px; height: 20px;" />
-</c:when>
-<c:otherwise>
+	</c:when>
+	<c:otherwise>
 							<td class="text-left"><input type="checkbox" name="saveEmail" id="saveEmail" class="form-check-input" value="saveEmail" style="width: 20px; height: 20px;" />
-</c:otherwise>
-</c:choose>
+	</c:otherwise>
+	</c:choose>
 							<label class="form-check-label" for="saveEmail">이메일 저장</label></td>
 							<td style="text-align: right;"><a class="text-dark text-decoration-none" href="findPass">비밀번호를 잊으셨나요?</a></td>
 					</tr>
@@ -89,8 +89,8 @@ window.onload = function() {
 						<td align="center" colspan="2"><div class="d-grid gap-2 col-12 mx-auto">
 						<input type="submit" value="로그인" class="btn btn-outline-danger" /></div></td>
 					</tr>
-			</c:when>
-			<c:when test="${loginPage == '2' }">
+</c:when>
+<c:when test="${loginPage == '2' }">
 			<div class="col-12 d-grid mx-auto mt-4">
 			<form name="myMotherform" action="regist" method="post" onsubmit="return formValidate(this);" novalidate>
 				<table class="table table-borderless">
@@ -452,8 +452,8 @@ window.onload = function() {
 						<td align="center" colspan="2"><div class="d-grid gap-2 col-8 mx-auto">
 						<input type="submit" value="회원가입" class="btn btn-outline-secondary" /></div></td>
 					</tr>
-			</c:when>
-			</c:choose>
+</c:when>
+</c:choose>
 			</div>
 				</table>
 			</form>

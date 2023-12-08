@@ -12,8 +12,7 @@
 	}
 </style>
 <body>
-<div class="container-fluid mypageLM ms-5">
-	<div class="row">
+	<div class="col d-grid mx-auto">
 		<div class="border p-1 mypageLB"><a class="text-dark text-decoration-none" href="#">장바구니</a></div>
 		<div class="border p-1 mypageLB"><a class="text-dark text-decoration-none" href="#">주문내역</a></div>
 		<div class="border p-1 mypageLB"><a class="text-dark text-decoration-none" href="#">입찰내역</a></div>
@@ -22,6 +21,5 @@
 		<div class="border p-1 mypageLB"><a class="text-dark text-decoration-none" href="#">작가신청</a></div>
 		<div class="border p-1 mypageLB"><a class="text-dark text-decoration-none" href="#">정보수정</a></div>
 	</div>
-</div>
 </body>
 </html>

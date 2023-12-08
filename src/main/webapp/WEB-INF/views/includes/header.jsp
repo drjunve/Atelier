@@ -14,7 +14,9 @@
   			<li class="nav-item"><a class="nav-link text-dark" href="#">AUCTION</a></li>
   			<li class="nav-item"><a class="nav-link text-dark" href="#">FAQ</a></li>
   			<li class="nav-item"><a class="nav-link text-dark" href="#">COMPANY</a></li>
+			
   			<li class="nav-item"><a class="nav-link text-dark" href="mypage">MYPAGE</a></li>
+
   			<li class="nav-item">
   				<a class="nav-link" href="#">
   				<img class="img-fluid header-cart nav-cart" src="/images/header/cart.png"></img>

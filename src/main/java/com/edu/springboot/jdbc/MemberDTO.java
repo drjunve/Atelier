@@ -14,9 +14,9 @@ public class MemberDTO {
 	private int midx;
 	private String regidate;
 	private String leavedate;
-	private String profileo;
+	//private String profileo;
 	private String profiles;
-	private String placeo;
+	//private String placeo;
 	private String places;
 	private int total_point;
 	private int artist;
