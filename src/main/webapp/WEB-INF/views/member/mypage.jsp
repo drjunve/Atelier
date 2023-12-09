@@ -82,7 +82,7 @@
 	<div class="row">
 		<div class="row mx-auto" style="width: 85%;"> 
 			<!-- 레프트메뉴 -->
-			<div class="col-2">
+			<div class="col-2 mt-4">
 				<div class="border p-1 mypageLB"><a class="text-dark text-decoration-none" href="#">장바구니</a></div>
 				<div class="border p-1 mypageLB"><a class="text-dark text-decoration-none" href="#">주문내역</a></div>
 				<div class="border p-1 mypageLB"><a class="text-dark text-decoration-none" href="#">입찰내역</a></div>
